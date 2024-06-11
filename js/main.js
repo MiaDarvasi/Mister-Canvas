@@ -45,16 +45,16 @@ function onSetShape(shape) {
     elShape.value = gCurrShape
 }
 
-function onDraw(x, y) {
+function onDraw(x, y, m) {
     switch (gCurrShape) {
         case 'triangle':
-            drawTriangle(x, y)
+            drawTriangle(x, y, m)
             break
         case 'rect':
-            drawRect(x, y)
+            drawRect(x, y, m)
             break
         case 'circle':
-            drawArc(x, y)
+            drawArc(x, y, m)
             break
         case 'pen':
             drawPen(x, y)
@@ -71,7 +71,10 @@ function onMove(ev) {
     if (!gDrawMode) return
 
     const pos = getEvPos(ev)
-    onDraw(pos.x, pos.y)
+    const m = getMovement(ev)
+    console.log(m)
+
+    onDraw(pos.x, pos.y, m)
 
     gStartPos = pos
 }
@@ -186,5 +189,27 @@ function renderImg(elImg) {
 
     gCtx.clearRect(0, 0, gElCanvas.width, gElCanvas.height);
     gCtx.drawImage(elImg, offsetX, offsetY, elImg.width * scale, elImg.height * scale);
+}
+
+function getMovement(ev) {
+
+    if (TOUCH_EVS.includes(ev.type)) {
+        const touch = ev.touches[0];
+
+        if (gPreviousTouch) {
+            const touch = ev.touches[0];
+            ev.movementX = touch.pageX - gPreviousTouch.pageX;
+            ev.movementY = touch.pageY - gPreviousTouch.pageY;
+        }
+        gPreviousTouch = touch
+    }
+
+    // m provides the difference in the X coordinate of the mouse pointer between the given event and the previous
+    var mX = (ev.movementX >= 0) ? ev.movementX : -1 * ev.movementX
+    var mY = (ev.movementY >= 0) ? ev.movementY : -1 * ev.movementY
+    // console.log(' ev.movementX:', ev.movementX)
+    var m = (mX + mY) / 2
+    console.log(m)
+    return m
 }
 
