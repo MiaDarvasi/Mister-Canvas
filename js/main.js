@@ -8,6 +8,8 @@ var gDrawMode = false
 var gStartPos
 
 var gInputColor
+var gPreviousTouch
+
 
 const TOUCH_EVS = ['touchstart', 'touchmove', 'touchend']
 
