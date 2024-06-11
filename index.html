@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="css/styles.css" />
+	<title>Canvas</title>
+</head>
+
+<body onload="onInit()">
+
+	<input type="file" class="file-input btn" name="image" onchange="onImgInput(event)" accept="image/*" />
+
+	<nav class="main-nav">
+		<input class="btn" type="color" id="clr-input" value="#ffc0cb">
+		<select class="shapes-container btn" name="shapes">
+			<option value="circle">○</option>
+			<option value="rect">□</option>
+			<option value="triangle">△</option>
+		</select>
+		<button class="btn" onclick="onTogglePenMode()">✐ᝰ</button>
+		<button class="btn" onclick="onClearCanvas()"class="btn-clear">⟳</button>
+	</nav>
+
+	<div class="canvas-container">
+		<canvas width="350" height="350" onclick="onDraw(event)"> </canvas>
+	</div>
+
+    <a href="#" class="btn btn-dwnld" onclick="downloadImg(this)" download="my-img.jpg">⇩</a>
+	<button class="btn btn-facebook" onclick="onUploadImg()">ⓕ</button>
+
+	<script src="js/main.js"></script>
+	<script src="js/service.js"></script>
+    <script src="js/sharing-on-facebook.js"></script>
+
+</body>
+
+</html>
