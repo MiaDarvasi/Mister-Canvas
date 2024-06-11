@@ -2,7 +2,7 @@
 
 var gElCanvas
 var gCtx
-var gCurrShape = 'circle'
+var gCurrShape = 'pen'
 
 var gDrawMode = false
 var gStartPos
@@ -10,6 +10,7 @@ var gStartPos
 var gInputColor
 
 const TOUCH_EVS = ['touchstart', 'touchmove', 'touchend']
+
 
 
 function onInit() {
@@ -44,79 +45,58 @@ function onSetShape(shape) {
     elShape.value = gCurrShape
 }
 
-function renderDragShape(ev) {
-    const { offsetX, offsetY } = ev
-    const pos = getEvPos(ev)
-
-    createDragShape(pos, gCurrShape)
-
+function onDraw(x, y) {
     switch (gCurrShape) {
         case 'triangle':
-            drawTriangle(offsetX, offsetY)
+            drawTriangle(x, y)
             break
         case 'rect':
-            drawRect(offsetX, offsetY)
+            drawRect(x, y)
             break
         case 'circle':
-            drawArc(offsetX, offsetY)
+            drawArc(x, y)
             break
         case 'pen':
-            drawPen(offsetX, offsetY)
+            drawPen(x, y)
             break
     }
-}
-
-function onDraw(ev) {
-    const { offsetX, offsetY } = ev
-    const pos = getEvPos(ev)
-    gStartPos = pos
-
-    if (gDrawMode) return
-
-    switch (gCurrShape) {
-        case 'triangle':
-            drawTriangle(offsetX, offsetY)
-            break
-        case 'rect':
-            drawRect(offsetX, offsetY)
-            break
-        case 'circle':
-            drawArc(offsetX, offsetY)
-            break
-    }
-
 }
 
 function onDown(ev) {
+    gStartPos = getEvPos(ev)
     gDrawMode = true
-
-    renderDragShape(ev)
-
-    const pos = getEvPos(ev)
-    document.body.style.cursor = 'pointer'
 }
 
 function onMove(ev) {
     if (!gDrawMode) return
-    const pos = getEvPos(ev)
 
-    renderDragShape(ev)
+    const pos = getEvPos(ev)
+    onDraw(pos.x, pos.y)
 
     gStartPos = pos
-
-    const dx = pos.x - gStartPos.x
-    const dy = pos.y - gStartPos.y
-    moveDragShape(dx, dy)
 }
 
 function onUp() {
     gDrawMode = false
-    document.body.style.cursor = 'defult'
 }
 
-function onTogglePenMode() {
-    if (gCurrShape === 'pen') gCurrShape = 'circle'
-    else gCurrShape = 'pen'
+function getEvPos(ev) {
+
+    let pos = {
+        x: ev.offsetX,
+        y: ev.offsetY,
+    }
+
+    if (TOUCH_EVS.includes(ev.type)) {
+        ev.preventDefault()
+        ev = ev.changedTouches[0]
+
+        pos = {
+            x: ev.pageX - ev.target.offsetLeft - ev.target.clientLeft,
+            y: ev.pageY - ev.target.offsetTop - ev.target.clientTop,
+        }
+    }
+    return pos
 }
 
 function onClearCanvas() {
@@ -185,7 +165,6 @@ function loadImageFromInput(ev, onImageReady) {
     }
     reader.readAsDataURL(ev.target.files[0])
 }
-
 
 function renderImg(elImg) {
     const canvasAspectRatio = gElCanvas.width / gElCanvas.height;

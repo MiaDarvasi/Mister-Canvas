@@ -10,32 +10,6 @@ function createDragShape(pos, shape) {
     }
 }
 
-function moveDragShape(dx, dy) {
-    gDragShape.pos.x += dx
-    gDragShape.pos.y += dy
-}
-
-function getEvPos(ev) {
-
-    let pos = {
-        x: ev.offsetX,
-        y: ev.offsetY,
-    }
-
-    if (TOUCH_EVS.includes(ev.type)) {
-
-        ev.preventDefault()
-        ev = ev.changedTouches[0]
-
-        pos = {
-            x: ev.pageX - ev.target.offsetLeft - ev.target.clientLeft,
-            y: ev.pageY - ev.target.offsetTop - ev.target.clientTop,
-        }
-
-    }
-    return pos
-}
-
 function drawTriangle(x, y) {
     gCtx.beginPath()
 
@@ -69,11 +43,9 @@ function drawArc(x, y) {
 }
 
 function drawPen(x, y) {
-    gCtx.beginPath()
-    gCtx.lineWidth = 3
-
-    gCtx.arc(x, y, 1, 0, Math.PI * 2)
+    gCtx.beginPath();
+    gCtx.moveTo(gStartPos.x, gStartPos.y);
+    gCtx.lineTo(x, y);
     gCtx.strokeStyle = gInputColor
-    gCtx.stroke()
+    gCtx.stroke();
 }
-
